@@ -12,6 +12,39 @@ const port=5001;
 // view engine setup
 const events=[];
 
+const createdEvents= eventIds=>{
+  return Event.find({_id:{$in:eventIds}})
+      .then((events)=>{
+       return events.map((event)=>{
+          return {
+            ...event._doc,
+            _id:event.id,
+            creator:user.bind(this,event._doc.creator)
+          }
+        });
+      })
+      .catch((err)=>{
+        throw err;
+      })
+};
+
+const user= userId=>{
+  return User.findById(userId)
+      .then((user)=>{
+        if(!user){
+          throw new Error('This user is not valid');
+        }
+          return {
+            ...user._doc,
+            _id:user.id,
+            createdEvents:createdEvents.bind(this,user._doc.createdEvents)
+          }
+      })
+      .catch((err)=>{
+        throw err;
+      })
+};
+
 app.use('/graphql',graphqlhttp({
   schema:buildSchema(`
   type Event{
@@ -20,6 +53,7 @@ app.use('/graphql',graphqlhttp({
   description:String!
   price:Float!
   date:String!
+  creator:User!
   }
   
   type User{
@@ -27,6 +61,7 @@ app.use('/graphql',graphqlhttp({
     firstName:String!
     email:String!
     lastName:String
+    createdEvents:[Event!]
   }
   
   input UserInput{
@@ -60,9 +95,14 @@ app.use('/graphql',graphqlhttp({
   `),
   rootValue:{
     events:()=> {
-      return Event.find().then(result=> {
+      return Event.find()
+          .then(result=> {
         return result.map((event)=>{
-          return {...event._doc,_id:event.id}
+          return {
+            ...event._doc,
+            _id:event.id,
+            creator:user.bind(this,event.creator)
+          }
         })
       }).catch(err=>{
         throw err
