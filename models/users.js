@@ -14,7 +14,7 @@ const userSchema= new Schema({
         require:true,
         type:String
     },
-    LastName:{
+    lastName:{
         type:String
     },
     createdEvents:[
