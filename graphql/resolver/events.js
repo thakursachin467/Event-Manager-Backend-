@@ -2,9 +2,6 @@ const Event = require('../../models/events');
 const User = require('../../models/users');
 const {transformEvent}= require('./merge');
 
-
-
-
 module.exports={
     events: async ()=> {
         const result= await Event.find();
@@ -16,17 +13,21 @@ module.exports={
             throw err
         }
     },
-    createEvent: async (args)=>{
+    createEvent: async (args,req)=>{
+        if(!req.isAuth){
+            throw  new Error(`Sorry You can't access this resource, Please Login` );
+        }
+        const user=req.userId;
         const event = new Event({
             title:args.eventInput.title,
             description:args.eventInput.description,
             price: +args.eventInput.price,
             date: new Date(args.eventInput.date),
-            creator:'5c5b158a683813c8a96891dc'
+            creator:user
         });
         const result= await event.save();
         try{
-            const res=  await  User.findById('5c5b158a683813c8a96891dc');
+            const res=  await  User.findById(user);
             if(!res){
                 throw new Error('User Does Not exist');
             }

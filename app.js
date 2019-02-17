@@ -9,11 +9,13 @@ const bcrypt= require('bcryptjs');
 const schema= require('./graphql/schema/index');
 const resolvers= require('./graphql/resolver/index');
 const app = express();
+const isAuth= require('./middleware/isAuth');
 const port=5001;
 // view engine setup
 const events=[];
 
 
+app.use(isAuth);
 
 app.use('/graphql',graphqlhttp({
   schema:schema,

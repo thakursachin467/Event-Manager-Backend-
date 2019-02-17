@@ -2,7 +2,6 @@ const Event = require('../../models/events');
 const {dateToString}= require('../../utils/date');
 const User = require('../../models/users');
 
-
 const transformEvent=(event)=>{
     return{
         ...event._doc,
