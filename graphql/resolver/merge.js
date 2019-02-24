@@ -51,7 +51,7 @@ const  createdEvents= async  (eventIds)=>{
 
 const createdEvent= async (eventId)=>{
     try{
-        const event = await Event.findById(eventId)
+        const event = await Event.findById(eventId);
         return  transformEvent(event);
     }catch (e) {
         throw  e;
