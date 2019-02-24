@@ -23,6 +23,6 @@ module.exports= (req,res,next)=>{
     }
 
     req.isAuth= true;
-    req.user= verification.userId;
+    req.userId= verification.userId;
     return next();
 };
